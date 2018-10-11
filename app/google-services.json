@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "618615441583",
+    "firebase_url": "https://faceapp97105.firebaseio.com",
+    "project_id": "faceapp97105",
+    "storage_bucket": "faceapp97105.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618615441583:android:42ec13a64465d650",
+        "android_client_info": {
+          "package_name": "mwi.faceappcyclegan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618615441583-oivp4acgocbf31u2eubg60cc15er6pd0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWczW4e2iV8CWYgBrb_ezYYC1Z09tr-CU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
