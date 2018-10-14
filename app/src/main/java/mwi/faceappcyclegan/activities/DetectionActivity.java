@@ -30,16 +30,19 @@ import java.io.IOException;
 import java.util.List;
 
 import mwi.faceappcyclegan.R;
+import mwi.faceappcyclegan.utils.ImageLoader;
 
 import static mwi.faceappcyclegan.utils.ImageLoader.compressImage;
+import static mwi.faceappcyclegan.utils.ImageLoader.correctBoundingBox;
 import static mwi.faceappcyclegan.utils.ImageLoader.getPath;
 import static mwi.faceappcyclegan.utils.ImageLoader.rotateImage;
+import static mwi.faceappcyclegan.utils.ImageLoader.toGrayscale;
 
 public class DetectionActivity extends AppCompatActivity {
 
     Bitmap bitmap = null;
     Uri imageUri;
-    ImageView imageView;
+    ImageView imageView, realFaceImageView, fakeFaceImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,6 @@ public class DetectionActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String photoPath = String.valueOf(bundle.get("photoUri"));
         imageUri = Uri.parse(photoPath);
-//        byte[] byteArray = bundle.getByteArray("bitmap");
-//        bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         try {
             bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -74,9 +75,10 @@ public class DetectionActivity extends AppCompatActivity {
 
         final Context context = getApplicationContext();
         imageView = findViewById(R.id.photoImageView);
+        realFaceImageView = findViewById(R.id.realFaceImageView);
+        fakeFaceImageView = findViewById(R.id.fakeFaceImageView);
+
         imageView.setImageBitmap(bitmap);
-
-
 
 
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
@@ -89,22 +91,38 @@ public class DetectionActivity extends AppCompatActivity {
                 new OnSuccessListener<List<FirebaseVisionFace>>() {
                     @Override
                     public void onSuccess(List<FirebaseVisionFace> firebaseVisionFaces) {
-                        Toast.makeText(context, "SUCCESS ^.^  --> " + String.valueOf(firebaseVisionFaces.size() + " faces"), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "SUCCESS ^.^  --> " + String.valueOf(firebaseVisionFaces.size() + " faces"), Toast.LENGTH_SHORT).show();
 
                         Bitmap facesWithBoundingBox = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                         Canvas canvas = new Canvas(facesWithBoundingBox);
 
                         for (int i=0; i<firebaseVisionFaces.size(); i++) {
                             FirebaseVisionFace face = firebaseVisionFaces.get(i);
+
                             Rect rect = face.getBoundingBox();
 
                             Paint paint = new Paint();
                             paint.setColor(Color.GREEN);
                             paint.setStyle(Paint.Style.STROKE);
-                            paint.setStrokeWidth(10);
+                            paint.setStrokeWidth(5);
 
                             canvas.drawRect(rect, paint);
 
+
+                            rect = correctBoundingBox(rect, bitmap.getHeight());
+
+                            paint.setColor(Color.RED);
+                            paint.setStyle(Paint.Style.STROKE);
+                            paint.setStrokeWidth(5);
+
+                            canvas.drawRect(rect, paint);
+
+                            if (i == 0) {
+                                Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                                croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+                                realFaceImageView.setImageBitmap(toGrayscale(croppedFace));
+
+                            }
 //                            Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 //                            croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
                         }

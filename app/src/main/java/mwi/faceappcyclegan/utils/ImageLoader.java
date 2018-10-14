@@ -12,8 +12,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -23,7 +26,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ImageLoader {
@@ -280,6 +282,51 @@ public class ImageLoader {
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
+
+
+
+
+    public static Rect correctBoundingBox(Rect previousRect, float imageHeight) {
+        Rect rect = new Rect(previousRect);
+
+        float movement = imageHeight * 0.01f;
+//        rect.top += movement;
+        rect.bottom += 10*movement;
+
+        float faceWidth = rect.right - rect.left;
+        float faceHeight = rect.bottom - rect.top;
+
+        if (faceWidth > faceHeight) {
+            float diff = (faceWidth - faceHeight)/2;
+            rect.left += diff;
+            rect.right -= diff;
+        } else {
+            float diff = (faceHeight - faceWidth)/2;
+            rect.top += diff;
+            rect.bottom -= diff;
+        }
+
+        return rect;
+    }
+
+
+    public static Bitmap toGrayscale(Bitmap bmpOriginal)
+    {
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
+
 
 
 }

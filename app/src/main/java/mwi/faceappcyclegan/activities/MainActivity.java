@@ -159,24 +159,8 @@ public class MainActivity extends Activity {
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult();
-//
-//            if (bitmap != null && photoUri != null) {
-//                String filePath = getPath(this, photoUri);
-//                bitmap = compressImage(filePath);
-//                bitmap = rotateImage(bitmap, filePath);
-//            } else {
-//                Toast.makeText(this, "Something went wrong...", Toast.LENGTH_LONG).show();
-//            }
-
-//            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 80, bStream);
-//            byte[] byteArray = bStream.toByteArray();
-
-//                Intent intentParent = getIntent();
-//                setResult(RESULT_OK, intentParent);
 
             Intent anotherIntent = new Intent(this, DetectionActivity.class);
-//            anotherIntent.putExtra("bitmap", byteArray);
             anotherIntent.putExtra("photoUri", photoUri);
             startActivity(anotherIntent);
             finish();
