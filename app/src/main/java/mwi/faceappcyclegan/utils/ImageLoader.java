@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ImageLoader {
@@ -66,9 +67,6 @@ public class ImageLoader {
 
 
 
-
-
-
     public static Bitmap rotateImage(Bitmap bitmap, String filePath) {
         ExifInterface exif;
         try {
@@ -103,9 +101,9 @@ public class ImageLoader {
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
 
-//      max Height and width values of the compressed image is taken as 816x612
-        float maxHeight = 1024.0f;
-        float maxWidth = 720.0f;
+//      max Height and width values of the compressed image
+        float maxHeight = actualHeight > actualWidth ? 1024.0f : 720.0f;
+        float maxWidth = maxHeight == 1024.0f ? 720.0f : 1024.0f;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 

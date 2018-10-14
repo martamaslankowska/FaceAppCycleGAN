@@ -157,27 +157,30 @@ public class MainActivity extends Activity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA) {
+            else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult();
-            }
+//
+//            if (bitmap != null && photoUri != null) {
+//                String filePath = getPath(this, photoUri);
+//                bitmap = compressImage(filePath);
+//                bitmap = rotateImage(bitmap, filePath);
+//            } else {
+//                Toast.makeText(this, "Something went wrong...", Toast.LENGTH_LONG).show();
+//            }
 
-            if (bitmap != null && photoUri != null) {
-                String filePath = getPath(this, photoUri);
-                bitmap = compressImage(filePath);
-                bitmap = rotateImage(bitmap, filePath);
-            } else {
-                Toast.makeText(this, "Something went wrong...", Toast.LENGTH_LONG).show();
-            }
+//            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 80, bStream);
+//            byte[] byteArray = bStream.toByteArray();
 
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
-            byte[] byteArray = bStream.toByteArray();
+//                Intent intentParent = getIntent();
+//                setResult(RESULT_OK, intentParent);
 
             Intent anotherIntent = new Intent(this, DetectionActivity.class);
-            anotherIntent.putExtra("bitmap", byteArray);
+//            anotherIntent.putExtra("bitmap", byteArray);
             anotherIntent.putExtra("photoUri", photoUri);
             startActivity(anotherIntent);
             finish();
+
         }
     }
 

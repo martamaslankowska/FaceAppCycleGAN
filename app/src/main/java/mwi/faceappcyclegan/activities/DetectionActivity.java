@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -25,13 +26,18 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFace;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 
+import java.io.IOException;
 import java.util.List;
 
 import mwi.faceappcyclegan.R;
 
+import static mwi.faceappcyclegan.utils.ImageLoader.compressImage;
+import static mwi.faceappcyclegan.utils.ImageLoader.getPath;
+import static mwi.faceappcyclegan.utils.ImageLoader.rotateImage;
+
 public class DetectionActivity extends AppCompatActivity {
 
-    Bitmap bitmap;
+    Bitmap bitmap = null;
     Uri imageUri;
     ImageView imageView;
 
@@ -43,8 +49,17 @@ public class DetectionActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         String photoPath = String.valueOf(bundle.get("photoUri"));
         imageUri = Uri.parse(photoPath);
-        byte[] byteArray = bundle.getByteArray("bitmap");
-        bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+//        byte[] byteArray = bundle.getByteArray("bitmap");
+//        bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            String filePath = getPath(this, imageUri);
+            bitmap = compressImage(filePath);
+            bitmap = rotateImage(bitmap, filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         FirebaseApp.initializeApp(this);
 
@@ -90,8 +105,8 @@ public class DetectionActivity extends AppCompatActivity {
 
                             canvas.drawRect(rect, paint);
 
-                            Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                            croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+//                            Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+//                            croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
                         }
                         imageView.setImageBitmap(facesWithBoundingBox);
 
