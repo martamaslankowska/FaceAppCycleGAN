@@ -33,6 +33,10 @@ dependencies {
     implementation "com.google.firebase:firebase-core:16.0.1"
     // 2 - FirebaseUI for Firebase Auth (Or whatever you need...)
     implementation 'com.firebaseui:firebase-ui-auth:3.1.2'
+
+    //TensorFlow
+    implementation "org.tensorflow:tensorflow-android:1.8.0"
+
 }
 
 apply plugin: 'com.google.gms.google-services'

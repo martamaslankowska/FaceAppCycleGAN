@@ -160,6 +160,8 @@ public class MainActivity extends Activity {
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult();
 
+//            bitmap = compressImage(photoUri.getPath());
+
             Intent anotherIntent = new Intent(this, DetectionActivity.class);
             anotherIntent.putExtra("photoUri", photoUri);
             startActivity(anotherIntent);
