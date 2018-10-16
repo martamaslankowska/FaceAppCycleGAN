@@ -42,6 +42,7 @@ import static mwi.faceappcyclegan.utils.ImageLoader.toGrayscale;
 import static mwi.faceappcyclegan.utils.ImageTransformer.IMAGE_INPUT_SIZE;
 import static mwi.faceappcyclegan.utils.ImageTransformer.initTensorflow;
 import static mwi.faceappcyclegan.utils.ImageTransformer.preprocessImageToNormalizedFloats;
+import static mwi.faceappcyclegan.utils.ImageTransformer.processImageFromNormalizedFloats;
 import static mwi.faceappcyclegan.utils.ImageTransformer.produceFakeImage;
 
 
@@ -107,6 +108,9 @@ public class DetectionActivity extends AppCompatActivity {
                             float[] tensorflowInput = preprocessImageToNormalizedFloats(face);
 
                             float[] tensorflowOutput = produceFakeFace(tensorflowInput);
+
+                            Bitmap fakeFace = processImageFromNormalizedFloats(tensorflowOutput);
+                            loadFakeFace(fakeFace);
                         }
                     }
                 })
@@ -162,11 +166,11 @@ public class DetectionActivity extends AppCompatActivity {
             if (i == 0) {
                 Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
-                realFaceImageView.setImageBitmap(toGrayscale(croppedFace));
-                fakeFaceImageView.setImageBitmap(croppedFace);
-
                 grayCroppedBitmap = toGrayscale(croppedFace);
-                preprocessImageToNormalizedFloats(grayCroppedBitmap);
+
+                Bitmap scaledFace = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
+                realFaceImageView.setImageBitmap(scaledFace);
+                fakeFaceImageView.setImageBitmap(croppedFace);
             }
         }
         imageView.setImageBitmap(facesWithBoundingBox);
@@ -215,4 +219,7 @@ public class DetectionActivity extends AppCompatActivity {
         return output;
     }
 
+    public void loadFakeFace(Bitmap fakeFace) {
+        fakeFaceImageView.setImageBitmap(fakeFace);
+    }
 }

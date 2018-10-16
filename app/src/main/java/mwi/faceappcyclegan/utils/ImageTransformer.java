@@ -26,7 +26,6 @@ public class ImageTransformer {
 
     public static float[] produceFakeImage(TensorFlowInferenceInterface tensorflow, float[] input) {
         float[] output = new float[IMAGE_OUTPUT_SIZE * IMAGE_OUTPUT_SIZE * COLOR_CHANNELS];
-        long[] inputSize = new long[]{IMAGE_INPUT_SIZE * IMAGE_INPUT_SIZE * COLOR_CHANNELS};
 
         // loading new input
         tensorflow.feed(INPUT_NODE_NAME, input, 1L, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, COLOR_CHANNELS);
@@ -55,6 +54,28 @@ public class ImageTransformer {
             normalizedPixels[i * 3 + 2] = (Color.blue(pixel) - imageMean) / imageStd;
         }
         return normalizedPixels;
+    }
+
+    public static Bitmap processImageFromNormalizedFloats(float[] normalizedPixels) {
+        int[] bitmapPixels = new int [IMAGE_INPUT_SIZE * IMAGE_INPUT_SIZE];
+
+
+
+
+        int imageMean = 128;
+        float imageStd = 128.0f;
+        int R, G, B;
+        for (int i=0; i<bitmapPixels.length; i++) {
+            R = (int)(normalizedPixels[i * 3] * imageStd) + imageMean;
+            G = (int)(normalizedPixels[i * 3 + 1] * imageStd) + imageMean;
+            B = (int)(normalizedPixels[i * 3 + 2] * imageStd) + imageMean;
+            bitmapPixels[i] = (R << 16) | (G << 8) | B;
+            bitmapPixels[i] *= -1;
+        }
+
+
+        Bitmap fakeImage = Bitmap.createBitmap(bitmapPixels, IMAGE_OUTPUT_SIZE, IMAGE_OUTPUT_SIZE, Bitmap.Config.ARGB_8888);
+        return fakeImage;
     }
 
 
