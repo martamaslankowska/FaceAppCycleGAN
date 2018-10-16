@@ -59,10 +59,8 @@ public class ImageTransformer {
     public static Bitmap processImageFromNormalizedFloats(float[] normalizedPixels) {
         int[] bitmapPixels = new int [IMAGE_INPUT_SIZE * IMAGE_INPUT_SIZE];
 
-
-        int RGB_MASK = 0x00FFFFFF;
-
-
+//        int RGB_MASK = 0x00FFFFFF;
+        int MASK = 0xFF000000;
         int imageMean = 128;
         float imageStd = 128.0f;
         int R, G, B;
@@ -71,13 +69,10 @@ public class ImageTransformer {
             G = (int)(normalizedPixels[i * 3 + 1] * imageStd) + imageMean;
             B = (int)(normalizedPixels[i * 3 + 2] * imageStd) + imageMean;
             bitmapPixels[i] = (R << 16) | (G << 8) | B;
-            bitmapPixels[i] *= -1;
-
-
-            bitmapPixels[i] ^= RGB_MASK;
-
+            bitmapPixels[i] |= MASK;
+//            bitmapPixels[i] *= -1;
+//            bitmapPixels[i] ^= RGB_MASK;
         }
-
 
         Bitmap fakeImage = Bitmap.createBitmap(bitmapPixels, IMAGE_OUTPUT_SIZE, IMAGE_OUTPUT_SIZE, Bitmap.Config.ARGB_8888);
         return fakeImage;

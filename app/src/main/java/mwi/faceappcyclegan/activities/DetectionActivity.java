@@ -1,12 +1,14 @@
 package mwi.faceappcyclegan.activities;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -88,7 +90,6 @@ public class DetectionActivity extends AppCompatActivity {
 
         imageView.setImageBitmap(bitmap);
 
-
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
@@ -99,19 +100,24 @@ public class DetectionActivity extends AppCompatActivity {
                 new OnSuccessListener<List<FirebaseVisionFace>>() {
                     @Override
                     public void onSuccess(List<FirebaseVisionFace> firebaseVisionFaces) {
-                        Toast.makeText(context, "SUCCESS ^.^  --> " + String.valueOf(firebaseVisionFaces.size() + " face(s)"), Toast.LENGTH_SHORT).show();
+
+                        if (firebaseVisionFaces.isEmpty())
+                            Toast.makeText(context, "Haven't detect any faces, sorry :(", Toast.LENGTH_SHORT).show();
 
                         loadRealFace(firebaseVisionFaces);
 
-                        if (grayCroppedBitmap != null) {
-                            Bitmap face = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
-                            float[] tensorflowInput = preprocessImageToNormalizedFloats(face);
-
-                            float[] tensorflowOutput = produceFakeFace(tensorflowInput);
-
-                            Bitmap fakeFace = processImageFromNormalizedFloats(tensorflowOutput);
-                            loadFakeFace(fakeFace);
-                        }
+                        // asynchronous
+                        LoadImageTask imageProcess = new LoadImageTask(fakeFaceImageView, grayCroppedBitmap, getAssets());
+                        imageProcess.execute();
+//                        if (grayCroppedBitmap != null) {
+//                            Bitmap face = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
+//                            float[] tensorflowInput = preprocessImageToNormalizedFloats(face);
+//
+//                            float[] tensorflowOutput = produceFakeFace(tensorflowInput);
+//
+//                            Bitmap fakeFace = processImageFromNormalizedFloats(tensorflowOutput);
+//                            loadFakeFace(fakeFace);
+//                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -170,13 +176,12 @@ public class DetectionActivity extends AppCompatActivity {
 
                 Bitmap scaledFace = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
                 realFaceImageView.setImageBitmap(scaledFace);
-                fakeFaceImageView.setImageBitmap(croppedFace);
             }
         }
         imageView.setImageBitmap(facesWithBoundingBox);
     }
 
-    public float[] produceFakeFace(float[] input) {
+    public static float[] produceFakeFace(float[] input, AssetManager assets) {
 //        AssetManager assetManager = getAssets();
 //        try {
 //            InputStream g = assetManager.open("kozaczix.pb");
@@ -206,7 +211,7 @@ public class DetectionActivity extends AppCompatActivity {
 ////            e.printStackTrace();
 ////        }
         /** One time initialization: */
-        TensorFlowInferenceInterface tensorflow = initTensorflow(getAssets());
+        TensorFlowInferenceInterface tensorflow = initTensorflow(assets);
 
         Graph g = tensorflow.graph();
         Iterator<Operation> it = g.operations();
@@ -219,7 +224,45 @@ public class DetectionActivity extends AppCompatActivity {
         return output;
     }
 
-    public void loadFakeFace(Bitmap fakeFace) {
-        fakeFaceImageView.setImageBitmap(fakeFace);
+    public static void loadFakeFace(Bitmap fakeFace, ImageView imageView) {
+        imageView.setImageBitmap(fakeFace);
     }
+
+
+
+
+    private static class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
+
+        private ImageView fakeImageView;
+        private Bitmap croppedBitmap;
+        private AssetManager assetManager;
+
+        public LoadImageTask(ImageView fakeFace, Bitmap croppedBitmap, AssetManager assets) {
+            this.fakeImageView = fakeFace;
+            this.croppedBitmap = croppedBitmap;
+            this.assetManager = assets;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Object[] objects) {
+            Bitmap fakeFace = null;
+            if (croppedBitmap != null) {
+                Bitmap face = Bitmap.createScaledBitmap(croppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
+                float[] tensorflowInput = preprocessImageToNormalizedFloats(face);
+
+                float[] tensorflowOutput = produceFakeFace(tensorflowInput, assetManager);
+
+                fakeFace = processImageFromNormalizedFloats(tensorflowOutput);
+//                loadFakeFace(fakeFace);
+            }
+            return fakeFace;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if (result != null)
+                loadFakeFace(result, fakeImageView);
+        }
+    }
+
 }

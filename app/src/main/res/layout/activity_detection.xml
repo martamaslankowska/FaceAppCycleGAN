@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
         app:layout_constraintHorizontal_bias="0.4"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+        app:srcCompat="@drawable/face_icon" />
 
 
     <ImageView
@@ -80,7 +80,7 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
         app:layout_constraintHorizontal_bias="0.6"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_light_focused" />
+        app:srcCompat="@drawable/hourglass" />
 
 
 </android.support.constraint.ConstraintLayout>

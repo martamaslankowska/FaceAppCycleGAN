@@ -291,7 +291,7 @@ public class ImageLoader {
 
         float movement = (rect.bottom - rect.top) * 0.01f;
 //        rect.top += movement;
-        rect.bottom += 10*movement;
+        rect.bottom += 15*movement;
 
         float faceWidth = rect.right - rect.left;
         float faceHeight = rect.bottom - rect.top;
