@@ -289,7 +289,7 @@ public class ImageLoader {
     public static Rect correctBoundingBox(Rect previousRect, float imageHeight) {
         Rect rect = new Rect(previousRect);
 
-        float movement = imageHeight * 0.01f;
+        float movement = (rect.bottom - rect.top) * 0.01f;
 //        rect.top += movement;
         rect.bottom += 10*movement;
 

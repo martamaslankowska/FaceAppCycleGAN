@@ -60,6 +60,7 @@ public class ImageTransformer {
         int[] bitmapPixels = new int [IMAGE_INPUT_SIZE * IMAGE_INPUT_SIZE];
 
 
+        int RGB_MASK = 0x00FFFFFF;
 
 
         int imageMean = 128;
@@ -71,6 +72,10 @@ public class ImageTransformer {
             B = (int)(normalizedPixels[i * 3 + 2] * imageStd) + imageMean;
             bitmapPixels[i] = (R << 16) | (G << 8) | B;
             bitmapPixels[i] *= -1;
+
+
+            bitmapPixels[i] ^= RGB_MASK;
+
         }
 
 
