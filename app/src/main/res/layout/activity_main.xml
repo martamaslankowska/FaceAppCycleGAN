@@ -6,7 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp">
+
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="0dp"
+        android:paddingBottom="0dp"
+        android:src="@drawable/faces_rotated_blured_cropped_vol2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <Button
@@ -15,25 +28,100 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="15dp"
-        android:text="Select Photo"
-        android:height="60dp"
+        android:layout_marginTop="30dp"
+        android:height="70dp"
+        android:text="@string/select_button"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivImage"
+    <!--<ImageView-->
+    <!--android:id="@+id/ivImage"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:src="@drawable/photo"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="@+id/btnSelectPhoto"-->
+    <!--app:layout_constraintStart_toStartOf="@+id/btnSelectPhoto"-->
+    <!--app:layout_constraintTop_toBottomOf="@+id/btnSelectPhoto"-->
+    <!--app:layout_constraintVertical_bias="0.0" />-->
+
+    <!--<ImageView-->
+        <!--android:id="@+id/imageViewGif"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:srcCompat="@drawable/hourglass_cropped" />-->
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/photo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/btnSelectPhoto"
-        app:layout_constraintStart_toStartOf="@+id/btnSelectPhoto"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectPhoto"
-        app:layout_constraintVertical_bias="0.0" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+
+    <ImageView
+        android:id="@+id/happyImageView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/neutralImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineHorizontal"
+        android:src="@drawable/happy_emoji" />
+
+    <ImageView
+        android:id="@+id/neutralImageView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal2"
+        app:layout_constraintEnd_toEndOf="@+id/happyImageView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/happyImageView"
+        app:layout_constraintTop_toBottomOf="@+id/happyImageView"
+        android:src="@drawable/neutral_emoji" />
+
+    <ImageView
+        android:id="@+id/arrowUpImageView"
+        android:layout_width="40dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="@+id/neutralImageView"
+        app:layout_constraintStart_toEndOf="@+id/happyImageView"
+        app:layout_constraintTop_toTopOf="@+id/happyImageView"
+        android:src="@drawable/arrow_up" />
+
+    <ImageView
+        android:id="@+id/arrowDownImageView"
+        android:layout_width="45dp"
+        android:layout_height="90dp"
+        app:layout_constraintBottom_toBottomOf="@+id/neutralImageView"
+        app:layout_constraintEnd_toStartOf="@+id/happyImageView"
+        app:layout_constraintTop_toTopOf="@+id/happyImageView"
+        android:src="@drawable/arrow_down" />
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineHorizontal2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 
 

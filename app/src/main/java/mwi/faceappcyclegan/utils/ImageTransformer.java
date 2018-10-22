@@ -6,14 +6,18 @@ import android.graphics.Color;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
+import static mwi.faceappcyclegan.activities.DetectionActivity.GRAPH_NAME;
+import static mwi.faceappcyclegan.activities.DetectionActivity.imageColor;
+import static mwi.faceappcyclegan.activities.DetectionActivity.imageColors;
+
 public class ImageTransformer {
 
     static TensorFlowInferenceInterface tensorflow;
-    static final String GRAPH_PATH = "file:///android_asset/kozaczix.pb";
+    static final String GRAPH_PATH = "file:///android_asset/" + GRAPH_NAME;
     static final String INPUT_NODE_NAME = "strided_slice:0";  // import/ prefix
     static final String OUTPUT_NODE_NAME = "generatorA2B/Tanh:0";  // import/ prefix
-    public static final int IMAGE_INPUT_SIZE = 64;
-    public static final int IMAGE_OUTPUT_SIZE = 64;
+    public static final int IMAGE_INPUT_SIZE = imageColor == imageColors[0] ? 64 : 128;
+    public static final int IMAGE_OUTPUT_SIZE = IMAGE_INPUT_SIZE;
     static final int COLOR_CHANNELS = 3;
 
 
@@ -59,7 +63,7 @@ public class ImageTransformer {
     public static Bitmap processImageFromNormalizedFloats(float[] normalizedPixels) {
         int[] bitmapPixels = new int [IMAGE_INPUT_SIZE * IMAGE_INPUT_SIZE];
 
-//        int RGB_MASK = 0x00FFFFFF;
+        int RGB_MASK = 0x00FFFFFF;
         int MASK = 0xFF000000;
         int imageMean = 128;
         float imageStd = 128.0f;
@@ -70,6 +74,8 @@ public class ImageTransformer {
             B = (int)(normalizedPixels[i * 3 + 2] * imageStd) + imageMean;
             bitmapPixels[i] = (R << 16) | (G << 8) | B;
             bitmapPixels[i] |= MASK;
+
+
 //            bitmapPixels[i] *= -1;
 //            bitmapPixels[i] ^= RGB_MASK;
         }

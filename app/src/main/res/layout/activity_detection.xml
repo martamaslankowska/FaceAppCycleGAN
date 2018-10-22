@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/realFaceImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -49,18 +49,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
         app:layout_constraintHorizontal_bias="0.4"
-        app:srcCompat="@drawable/face_icon" />
+        app:srcCompat="@drawable/neutral_emoji" />
 
 
     <ImageView
         android:id="@+id/arrowImageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/arrows"
+        android:src="@drawable/arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fakeFaceImageView"
         app:layout_constraintStart_toEndOf="@+id/realFaceImageView"
@@ -69,8 +69,8 @@
 
     <ImageView
         android:id="@+id/fakeFaceImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -80,7 +80,7 @@
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal"
         app:layout_constraintHorizontal_bias="0.6"
-        app:srcCompat="@drawable/hourglass" />
+        app:srcCompat="@drawable/happy_emoji" />
 
 
 </android.support.constraint.ConstraintLayout>

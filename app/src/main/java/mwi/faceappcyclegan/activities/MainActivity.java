@@ -22,12 +22,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -56,10 +60,12 @@ public class MainActivity extends Activity {
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
-    private ImageView ivImage;
+    private ImageView happyImageView, neutralImageView;
     private String userChoosenTask;
     private Uri photoUri;
     Bitmap bitmap;
+//    final ViewGroup transitionsContainer = (ViewGroup) view.findViewById(R.id.transitions_container);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,17 @@ public class MainActivity extends Activity {
                 selectImage();
             }
         });
+
+//        happyImageView = findViewById(R.id.happyImageView);
+//        happyImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                TransitionManager.beginDelayedTransition(transitionsContainer);
+//                visible = !visible;
+//                text.setVisibility(visible ? View.VISIBLE : View.GONE);
+//            }
+//        });
+
     }
 
     @Override
@@ -81,9 +98,9 @@ public class MainActivity extends Activity {
         switch (requestCode) {
             case ImageLoader.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(userChoosenTask.equals("Take Photo"))
+                    if(userChoosenTask.equals(getString(R.string.take_photo)))
                         cameraIntent();
-                    else if(userChoosenTask.equals("Choose from Library"))
+                    else if(userChoosenTask.equals(getString(R.string.choose_gallery)))
                         galleryIntent();
                 } else {
                     //code for deny
@@ -93,10 +110,10 @@ public class MainActivity extends Activity {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library"};
+        final CharSequence[] items = { getString(R.string.take_photo), getString(R.string.choose_gallery)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Add Photo!");
+        builder.setTitle(getString(R.string.select_title));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -104,13 +121,13 @@ public class MainActivity extends Activity {
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
 
-                if (items[item].equals("Take Photo")) {
-                    userChoosenTask ="Take Photo";
+                if (items[item].equals(getString(R.string.take_photo))) {
+                    userChoosenTask = getString(R.string.take_photo);
                     if(result)
                         cameraIntent();
 
-                } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask = "Choose from Library";
+                } else if (items[item].equals(getString(R.string.choose_gallery))) {
+                    userChoosenTask = getString(R.string.choose_gallery);
                     if (result)
                         galleryIntent();
                 }
@@ -165,7 +182,7 @@ public class MainActivity extends Activity {
             Intent anotherIntent = new Intent(this, DetectionActivity.class);
             anotherIntent.putExtra("photoUri", photoUri);
             startActivity(anotherIntent);
-            finish();
+//            finish();
 
         }
     }

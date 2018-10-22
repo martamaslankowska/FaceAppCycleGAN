@@ -17,6 +17,8 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -50,9 +52,13 @@ import static mwi.faceappcyclegan.utils.ImageTransformer.produceFakeImage;
 
 public class DetectionActivity extends AppCompatActivity {
 
-    Bitmap bitmap, grayCroppedBitmap = null;
+    Bitmap bitmap, grayCroppedBitmap, rgbCroppedBitmap = null;
     Uri imageUri;
     ImageView imageView, realFaceImageView, fakeFaceImageView;
+    public final static String[] imageColors = {"GRAY", "RGB"};
+
+    public final static String imageColor = imageColors[1];
+    public final static String GRAPH_NAME = "kozaczix_priv.pb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,14 +107,20 @@ public class DetectionActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(List<FirebaseVisionFace> firebaseVisionFaces) {
 
-                        if (firebaseVisionFaces.isEmpty())
+                        if (firebaseVisionFaces.isEmpty()) {
                             Toast.makeText(context, "Haven't detect any faces, sorry :(", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(fakeFaceImageView);
+                            Glide.with(context)
+                                    .load(R.drawable.hourglass_rounded)
+                                    .into(imageViewTarget);
 
-                        loadRealFace(firebaseVisionFaces);
-
-                        // asynchronous
-                        LoadImageTask imageProcess = new LoadImageTask(fakeFaceImageView, grayCroppedBitmap, getAssets());
-                        imageProcess.execute();
+                            loadRealFace(firebaseVisionFaces);
+                            // asynchronous
+                            LoadImageTask imageProcess = new LoadImageTask(fakeFaceImageView, rgbCroppedBitmap, getAssets());
+                            imageProcess.execute();
+                        }
 //                        if (grayCroppedBitmap != null) {
 //                            Bitmap face = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
 //                            float[] tensorflowInput = preprocessImageToNormalizedFloats(face);
@@ -173,8 +185,10 @@ public class DetectionActivity extends AppCompatActivity {
                 Bitmap croppedFace = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 croppedFace = Bitmap.createBitmap(croppedFace, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
                 grayCroppedBitmap = toGrayscale(croppedFace);
+                rgbCroppedBitmap = croppedFace;
 
-                Bitmap scaledFace = Bitmap.createScaledBitmap(grayCroppedBitmap, IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
+                Bitmap scaledFace = Bitmap.createScaledBitmap(imageColor == imageColors[0] ? grayCroppedBitmap : rgbCroppedBitmap,
+                        IMAGE_INPUT_SIZE, IMAGE_INPUT_SIZE, false);
                 realFaceImageView.setImageBitmap(scaledFace);
             }
         }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FaceApp CycleGAN</string>
+    
+    <string name="select_button">Select image</string>
+    
+    <string name="select_title">Pick a way:</string>
+    <string name="take_photo">Take the picture</string>
+    <string name="choose_gallery">Choose from gallery</string>
+    
 </resources>
