@@ -19,14 +19,18 @@ import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.transition.ArcMotion;
+import android.support.transition.ChangeBounds;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -60,17 +64,20 @@ public class MainActivity extends Activity {
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Button btnSelect;
-    private ImageView happyImageView, neutralImageView;
+    private ImageView happyImageView, neutralImageView, emptyImageView;
     private String userChoosenTask;
     private Uri photoUri;
     Bitmap bitmap;
-//    final ViewGroup transitionsContainer = (ViewGroup) view.findViewById(R.id.transitions_container);
+    ViewGroup transitionsContainer;
 
+    boolean returnAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        View view = findViewById(android.R.id.content);
+        transitionsContainer = (ViewGroup) view.findViewById(R.id.mainLayout);
 
         btnSelect = findViewById(R.id.btnSelectPhoto);
         btnSelect.setOnClickListener(new View.OnClickListener() {
@@ -81,15 +88,18 @@ public class MainActivity extends Activity {
             }
         });
 
-//        happyImageView = findViewById(R.id.happyImageView);
-//        happyImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                TransitionManager.beginDelayedTransition(transitionsContainer);
-//                visible = !visible;
-//                text.setVisibility(visible ? View.VISIBLE : View.GONE);
-//            }
-//        });
+        happyImageView = findViewById(R.id.happyImageView);
+        neutralImageView = findViewById(R.id.neutralImageView);
+        emptyImageView = findViewById(R.id.emptyImageView);
+
+        emptyImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                returnAnimation = !returnAnimation;
+                happyImageView.setImageResource(returnAnimation ? R.drawable.neutral_emoji : R.drawable.happy_emoji);
+                neutralImageView.setImageResource(returnAnimation ? R.drawable.happy_emoji : R.drawable.neutral_emoji);
+            }
+        });
 
     }
 
@@ -181,6 +191,7 @@ public class MainActivity extends Activity {
 
             Intent anotherIntent = new Intent(this, DetectionActivity.class);
             anotherIntent.putExtra("photoUri", photoUri);
+            anotherIntent.putExtra("whichDirection", returnAnimation);
             startActivity(anotherIntent);
 //            finish();
 

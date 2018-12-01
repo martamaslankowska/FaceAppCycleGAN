@@ -53,12 +53,15 @@ import static mwi.faceappcyclegan.utils.ImageTransformer.produceFakeImage;
 public class DetectionActivity extends AppCompatActivity {
 
     Bitmap bitmap, grayCroppedBitmap, rgbCroppedBitmap = null;
+    Boolean direction;
     Uri imageUri;
+    int strokeWidth;
     ImageView imageView, realFaceImageView, fakeFaceImageView;
     public final static String[] imageColors = {"GRAY", "RGB"};
 
     public final static String imageColor = imageColors[1];
-    public final static String GRAPH_NAME = "kozaczix_priv.pb";
+    public final static int IMAGE_SIZE = 128;
+    public static String GRAPH_NAME = "kozaczix_A2B_rgb_128_2000pic_175e.pb";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,11 @@ public class DetectionActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         String photoPath = String.valueOf(bundle.get("photoUri"));
+        direction = bundle.getBoolean("whichDirection");
         imageUri = Uri.parse(photoPath);
+
+//        GRAPH_NAME = GRAPH_NAME.replaceAll(direction ? "B2A" : "A2B", direction ? "A2B" : "B2A");
+//        Toast.makeText(this, GRAPH_NAME, Toast.LENGTH_SHORT).show();
 
         try {
             bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
@@ -95,6 +102,10 @@ public class DetectionActivity extends AppCompatActivity {
         fakeFaceImageView = findViewById(R.id.fakeFaceImageView);
 
         imageView.setImageBitmap(bitmap);
+        strokeWidth = (int) ((bitmap.getWidth() + bitmap.getHeight()) * 0.003);
+        strokeWidth = strokeWidth < 1 ? 1 : strokeWidth;
+//        Toast.makeText(this, String.valueOf(strokeWidth) + " - density", Toast.LENGTH_SHORT).show();
+
 
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
@@ -116,7 +127,7 @@ public class DetectionActivity extends AppCompatActivity {
                                     .load(R.drawable.hourglass_rounded)
                                     .into(imageViewTarget);
 
-                            loadRealFace(firebaseVisionFaces);
+                            loadRealFace(firebaseVisionFaces, strokeWidth);
                             // asynchronous
                             LoadImageTask imageProcess = new LoadImageTask(fakeFaceImageView, rgbCroppedBitmap, getAssets());
                             imageProcess.execute();
@@ -156,7 +167,7 @@ public class DetectionActivity extends AppCompatActivity {
     }
 
 
-    public void loadRealFace(List<FirebaseVisionFace> firebaseVisionFaces) {
+    public void loadRealFace(List<FirebaseVisionFace> firebaseVisionFaces, int strokeWidth) {
         Bitmap facesWithBoundingBox = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(facesWithBoundingBox);
 
@@ -168,16 +179,16 @@ public class DetectionActivity extends AppCompatActivity {
             Paint paint = new Paint();
             paint.setColor(Color.GREEN);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
+            paint.setStrokeWidth(strokeWidth);
 
             canvas.drawRect(rect, paint);
 
 
-            rect = correctBoundingBox(rect, bitmap.getHeight());
+            rect = correctBoundingBox(rect, this);
 
             paint.setColor(Color.RED);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(5);
+            paint.setStrokeWidth(strokeWidth);
 
             canvas.drawRect(rect, paint);
 

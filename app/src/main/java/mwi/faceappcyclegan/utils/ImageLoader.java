@@ -25,6 +25,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -286,12 +287,12 @@ public class ImageLoader {
 
 
 
-    public static Rect correctBoundingBox(Rect previousRect, float imageHeight) {
+    public static Rect correctBoundingBox(Rect previousRect, Context context) {
         Rect rect = new Rect(previousRect);
 
         float movement = (rect.bottom - rect.top) * 0.01f;
 //        rect.top += movement;
-        rect.bottom += 15*movement;
+        rect.bottom += 25*movement;
 
         float faceWidth = rect.right - rect.left;
         float faceHeight = rect.bottom - rect.top;
@@ -304,6 +305,22 @@ public class ImageLoader {
             float diff = (faceHeight - faceWidth)/2;
             rect.top += diff;
             rect.bottom -= diff;
+        }
+
+        int size = rect.right - rect.left;
+
+        if (rect.left < 0) {
+            rect.top = -rect.left;
+            rect.left = 0;
+            Toast.makeText(context, "Left < 0", Toast.LENGTH_SHORT).show();
+        }
+
+        if (rect.top < 0) {
+            rect.top = (size + rect.top) % 2 == 0 ? 0 : 1;
+            int difference = (size - rect.top)/2;
+            rect.left += difference;
+            rect.right -= difference;
+            Toast.makeText(context, "Top < 0", Toast.LENGTH_SHORT).show();
         }
 
         return rect;
